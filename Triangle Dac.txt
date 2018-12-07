@@ -1,0 +1,51 @@
+module triangle(input clk,rst,output reg [0:7] dac
+    );
+reg [15:0]clkdiv;
+wire intclk;
+reg [0:7]count;
+reg en=1'b0;
+
+always@(posedge clk)
+begin
+	clkdiv=clkdiv+1;
+end
+assign intclk=clkdiv[2];
+
+always@(posedge intclk)
+begin
+	if(rst==1)
+	count<=8'h00;
+	else
+	begin
+		if(en==1'b0)
+		begin
+			if(count<8'hff)
+				count<=count+1;
+			else
+				en<=1'b1;
+		end
+		
+		else
+		begin
+			if(count>8'h00)
+				count<=count-1;
+			else
+				en=1'b0;
+		end
+	end
+	dac<=count;
+end
+endmodule
+
+
+UCF
+
+net "clk" loc="p55";
+net "dac<0>" loc="p24";
+net "dac<1>" loc="p22";
+net "dac<2>" loc="p21";
+net "dac<3>" loc="p17";
+net "dac<4>" loc="p15";
+net "dac<5>" loc="p14";
+net "dac<6>" loc="p12";
+net "dac<7>" loc="p1";

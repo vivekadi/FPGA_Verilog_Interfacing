@@ -1,0 +1,55 @@
+module  stepper_motor(  input  clk,  input  reset,  input  dir,  input  [1:0]  row,  output  reg  [3:0]  dout  );
+reg  [25:0]divclk;  
+reg  intclk;  
+reg  [3:0]register;
+  
+
+
+always@(posedge  clk)  
+begin  
+divclk=  divclk+1;  
+end  
+
+
+always@(row)  
+begin  
+	case(row)  
+	2'b00:intclk=  divclk[21];  
+	2'b01:intclk=  divclk[19];  
+	2'b10:intclk=  divclk[17];  
+	2'b11:intclk=  divclk[15];  
+	default:intclk=  divclk[21];  
+endcase  
+end
+
+  
+always@(posedge  intclk)  
+begin  
+	if(!reset)    
+		register=4'b1001;  
+	else    
+	begin      
+		if(!dir)          
+		register=  {register[0],  register[3:1]};      
+		else          
+		register=  {register[2:0],register[3]};    
+	end    
+	dout  =  register;      
+end    
+endmodule  
+
+
+
+
+
+
+UCF  CODE:  
+net  "row<0>"  loc  =  "p82";  
+net  "row<1>"  loc  =  "p84";  
+net  "dir"  loc  =  "p81";  
+net  "dout<0>"  loc  =  "p38";  
+net  "dout<1>"  loc  =  "p2";  
+net  "dout<2>"  loc  =  "p5";  
+net  "dout<3>"  loc  =  "p6";  
+net  "reset"  loc  =  "p80";  
+net  "clk"  loc  =  "p55"; 

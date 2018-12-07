@@ -1,0 +1,48 @@
+module Square_dac(input clk,rst,output reg [7:0]dac=8'h00);
+reg [8:0] count= 9'b00000000;
+reg en=1'b0;
+
+always @(posedge clk)
+begin
+	if (en==1'b0)
+	begin
+		if (count<8'hff) // check for top of count
+		begin
+			count<= count+1;
+			dac<=8'hff;
+		end
+		else 
+		begin
+			en<=1'b1;
+			dac<=8'h00;
+		end
+	end
+		
+	else 
+	begin
+		if (count>8'h00) // check for bottom of count
+		begin
+			count<= count-1;
+			dac<=8'h00;
+		end
+		else 
+		begin
+			en<=1'b0;
+			dac<=8'hff;
+		end
+	end
+end
+endmodule
+
+
+
+UCF
+net "clk" loc="p55";
+net "dac<0>" loc="p24";
+net "dac<1>" loc="p22";
+net "dac<2>" loc="p21";
+net "dac<3>" loc="p17";
+net "dac<4>" loc="p15";
+net "dac<5>" loc="p14";
+net "dac<6>" loc="p12";
+net "dac<7>" loc="p1";

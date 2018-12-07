@@ -1,0 +1,64 @@
+module dc(input clk,rst,dir, input [0:3] row, output reg [1:0] pwm,output reg rly
+    );
+reg [7:0]count;
+integer duty;
+wire x;
+reg [25:0] clkdiv;
+wire inclk;
+
+
+always@(posedge clk)
+begin
+	clkdiv=clkdiv+1;
+end
+assign intclk=clkdiv[12];
+
+
+assign x=row[0]&row[1]&row[2]&row[3];
+
+always@(x)
+begin
+	case(row)
+	4'd7:duty<=255;
+	4'd11:duty<=200;
+	4'd13:duty<=150;
+	4'd14:duty<=100;
+	default:duty<=100;
+	endcase
+end
+
+
+always@(posedge intclk)
+begin	
+	if(rst==1)
+		pwm<=2'b01;
+	else
+	begin
+		count<=count+1;
+		if(count>=duty)
+			pwm[1]=1'b0;
+		else
+			pwm[1]=1'b1;
+	end
+	if(dir==1)
+		rly<=1;
+	else
+		rly<=0;			
+end
+endmodule
+
+
+
+
+UCF
+
+net "clk" loc="p55";
+net "rst" loc="p80";
+net"dir" loc="p81";
+net "pwm<0>" loc="p5";
+net "pwm<1>" loc="p38";
+net"rly" loc="p2";
+net "row<0>" loc="p93";
+net "row<1>" loc="p94";
+net "row<2>" loc="p95";
+net "row<3>" loc="p97";
